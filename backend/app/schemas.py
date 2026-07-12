@@ -34,6 +34,23 @@ class CourseCreate(BaseModel):
     notes: str | None = Field(default=None, description="Notas libres")
 
 
+class CourseUpdate(BaseModel):
+    """Datos para ACTUALIZAR un curso (edición parcial).
+
+    Todos los campos son opcionales: el cliente manda solo lo que quiere cambiar.
+    Por eso cada campo tiene `default=None`. Al aplicar la actualización usamos
+    `exclude_unset=True` para distinguir "no lo mandó" de "lo mandó en null", y
+    así tocar únicamente los campos enviados.
+    """
+
+    title: str | None = Field(default=None, min_length=1)
+    url: str | None = None
+    platform: str | None = None
+    status: CourseStatus | None = None
+    progress: int | None = Field(default=None, ge=0, le=100)
+    notes: str | None = None
+
+
 class CourseRead(BaseModel):
     """Datos que la API DEVUELVE al cliente.
 
