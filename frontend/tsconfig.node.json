@@ -1,0 +1,13 @@
+{
+  // Config de TypeScript solo para archivos de herramientas (como vite.config.ts),
+  // que corren en Node, no en el navegador.
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true
+  },
+  "include": ["vite.config.ts"]
+}

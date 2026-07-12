@@ -1,0 +1,28 @@
+{
+  // Configuración de TypeScript para el frontend.
+  // Define qué tan estricto es el chequeo de tipos y a qué versión de JS compila.
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Resolución de módulos al estilo bundler (Vite) */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Chequeo estricto: aquí es donde TypeScript te "enseña" a base de errores.
+       Activarlo te obliga a manejar nulls, tipos exactos, etc. */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

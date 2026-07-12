@@ -1,23 +1,34 @@
+# NOTA: en .gitignore los comentarios deben ir en su propia línea.
+# git NO soporta comentarios al final de una línea de patrón; si los pones,
+# el patrón deja de funcionar. Por eso aquí cada comentario va aparte.
+
 # --- Python ---
-__pycache__/          # bytecode compilado por Python
+# bytecode compilado
+__pycache__/
 *.py[cod]
-.venv/                # entorno virtual (no se versiona: cada quien lo recrea)
+# entorno virtual (cada quien lo recrea, no se versiona)
+.venv/
 venv/
 *.egg-info/
 
 # --- Base de datos local ---
-*.db                  # el archivo SQLite es datos locales, no código
+# el archivo SQLite son datos locales, no código
+*.db
 *.sqlite3
 
 # --- Variables de entorno / secretos ---
-.env                  # nunca subir claves ni credenciales al repo
+# nunca subir claves ni credenciales
+.env
 
 # --- Node / Vite (frontend) ---
-node_modules/         # dependencias de npm (se reinstalan con npm install)
-dist/                 # build de producción generado
+# dependencias de npm (se reinstalan con npm install)
+node_modules/
+# build de producción generado
+dist/
 *.local
 
 # --- Editores / OS ---
 .vscode/
 .idea/
-.DS_Store             # archivo basura que crea macOS en cada carpeta
+# archivo basura que crea macOS
+.DS_Store
