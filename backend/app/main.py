@@ -14,7 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import create_db_and_tables
-from app.routers import courses
+from app.routers import items
 
 
 @asynccontextmanager
@@ -50,8 +50,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Enchufamos las rutas de cursos. A partir de aquí existen /courses, etc.
-app.include_router(courses.router)
+# Enchufamos las rutas de items. A partir de aquí existen /items, etc.
+app.include_router(items.router)
 
 
 @app.get("/health")
