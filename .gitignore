@@ -1,0 +1,23 @@
+# --- Python ---
+__pycache__/          # bytecode compilado por Python
+*.py[cod]
+.venv/                # entorno virtual (no se versiona: cada quien lo recrea)
+venv/
+*.egg-info/
+
+# --- Base de datos local ---
+*.db                  # el archivo SQLite es datos locales, no código
+*.sqlite3
+
+# --- Variables de entorno / secretos ---
+.env                  # nunca subir claves ni credenciales al repo
+
+# --- Node / Vite (frontend) ---
+node_modules/         # dependencias de npm (se reinstalan con npm install)
+dist/                 # build de producción generado
+*.local
+
+# --- Editores / OS ---
+.vscode/
+.idea/
+.DS_Store             # archivo basura que crea macOS en cada carpeta

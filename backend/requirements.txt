@@ -1,0 +1,8 @@
+# Dependencias del backend. Se instalan con: pip install -r requirements.txt
+#
+# Fijamos versiones ("==") para que el proyecto sea reproducible: cualquiera
+# que lo instale obtiene exactamente las mismas versiones que probamos.
+
+fastapi==0.115.0          # el framework web: define rutas, valida datos, genera /docs
+uvicorn[standard]==0.30.6 # el servidor ASGI que ejecuta la app de FastAPI
+sqlmodel==0.0.22          # ORM (Pydantic + SQLAlchemy) para hablar con SQLite con tipos
