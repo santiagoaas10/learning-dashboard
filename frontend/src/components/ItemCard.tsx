@@ -1,10 +1,14 @@
 /**
- * Tarjeta que muestra UN item y permite editarlo rápido.
+ * Tarjeta compacta del tablero: muestra UN item y permite editarlo rápido.
  *
- * Desde aquí puedes cambiar el estado, ajustar el progreso y borrar el item.
- * La tarjeta no habla con la API directamente: avisa a su padre (App) mediante
- * las funciones que recibe por props. Así App es el "dueño" de los datos y la
- * tarjeta solo se encarga de mostrarlos. Este patrón se llama "lifting state up".
+ * La tarjeta es `draggable`: al empezar a arrastrarla guarda su id en el
+ * `dataTransfer` y la columna que la reciba hará el PATCH de estado (ver
+ * Board.tsx). El <select> de estado se queda como alternativa al arrastre
+ * (en móvil el drag & drop nativo no funciona con el dedo).
+ *
+ * La tarjeta no habla con la API directamente: avisa a su padre mediante las
+ * funciones que recibe por props. Así App es el "dueño" de los datos y la
+ * tarjeta solo se encarga de mostrarlos ("lifting state up").
  */
 import type { Item, ItemStatus, ItemUpdate } from "../types";
 import { KIND_LABEL, PRIORITY_LABEL, STATUS_LABEL } from "./ItemForm";
@@ -32,47 +36,49 @@ export default function ItemCard({ item, onUpdate, onDelete }: ItemCardProps) {
   const overdue = isOverdue(item);
 
   return (
-    <div className="card">
-      <div className="item-head">
-        <div className="item-title">
-          {/* Si el item tiene link, el título es clickeable; si no, es texto plano. */}
-          {item.url ? (
-            <a href={item.url} target="_blank" rel="noreferrer">
-              {item.title}
-            </a>
-          ) : (
-            item.title
-          )}
-        </div>
-        {/* Las clases de los badges cambian según el valor -> color por CSS. */}
-        <div className="badges">
-          <span className={`badge kind-${item.kind}`}>{KIND_LABEL[item.kind]}</span>
-          <span className={`badge prio-${item.priority}`}>{PRIORITY_LABEL[item.priority]}</span>
-          <span className={`badge ${item.status}`}>{STATUS_LABEL[item.status]}</span>
-        </div>
-      </div>
-
-      <div className="muted">
-        {item.platform && <span>{item.platform}</span>}
-        {item.platform && item.due_date && <span> · </span>}
-        {item.due_date && (
-          <span className={overdue ? "overdue" : ""}>
-            {overdue ? "⚠️ Venció el " : "Para el "}
-            {item.due_date}
-          </span>
+    <div
+      className="card item-card"
+      draggable
+      // Al empezar el arrastre, metemos el id en el "sobre" que viaja con él.
+      onDragStart={(e) => e.dataTransfer.setData("text/plain", String(item.id))}
+    >
+      <div className="item-title">
+        {/* Si el item tiene link, el título es clickeable; si no, es texto plano. */}
+        {item.url ? (
+          <a href={item.url} target="_blank" rel="noreferrer">
+            {item.title}
+          </a>
+        ) : (
+          item.title
         )}
       </div>
+
+      {/* Las clases de los badges cambian según el valor -> color por CSS. */}
+      <div className="badges">
+        <span className={`badge kind-${item.kind}`}>{KIND_LABEL[item.kind]}</span>
+        <span className={`badge prio-${item.priority}`}>{PRIORITY_LABEL[item.priority]}</span>
+      </div>
+
+      {(item.platform || item.due_date) && (
+        <div className="muted">
+          {item.platform && <span>{item.platform}</span>}
+          {item.platform && item.due_date && <span> · </span>}
+          {item.due_date && (
+            <span className={overdue ? "overdue" : ""}>
+              {overdue ? "⚠️ Venció el " : "Para el "}
+              {item.due_date}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Barra de progreso: el ancho del relleno es el porcentaje. */}
       <div className="progress-track">
         <div className="progress-fill" style={{ width: `${item.progress}%` }} />
       </div>
-      <div className="muted" style={{ marginTop: 4 }}>
-        {item.progress}% completado
-      </div>
 
       <div className="actions">
-        {/* Cambiar estado: al elegir otra opción, se hace PATCH inmediatamente. */}
+        {/* Cambiar estado sin arrastrar: hace PATCH al elegir otra opción. */}
         <select
           value={item.status}
           onChange={(e) => onUpdate(item.id, { status: e.target.value as ItemStatus })}
@@ -91,11 +97,12 @@ export default function ItemCard({ item, onUpdate, onDelete }: ItemCardProps) {
           max={100}
           value={item.progress}
           onChange={(e) => onUpdate(item.id, { progress: Number(e.target.value) })}
-          style={{ flex: 1, minWidth: 120 }}
+          style={{ flex: 1, minWidth: 60 }}
+          title={`${item.progress}% completado`}
         />
 
-        <button className="btn-danger" onClick={() => onDelete(item.id)}>
-          Borrar
+        <button className="btn-danger" onClick={() => onDelete(item.id)} title="Borrar">
+          ✕
         </button>
       </div>
     </div>
