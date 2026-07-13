@@ -1,0 +1,4 @@
+# Dependencias que Vercel instala para la serverless function de api/.
+# "-r" incluye otro archivo de requirements: reusamos el del backend para
+# tener UNA sola lista de dependencias (si cambia allá, cambia acá).
+-r backend/requirements.txt

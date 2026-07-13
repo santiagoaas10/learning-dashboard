@@ -8,11 +8,12 @@
 
 import type { Item, ItemCreate, ItemUpdate, TokenResponse, User } from "./types";
 
-// Dónde vive la API. `import.meta.env` son las variables de entorno de Vite:
-// en desarrollo no definimos nada y usamos localhost; en producción se define
-// VITE_API_URL al hacer el build. El "??" usa el valor de la derecha solo si
-// el de la izquierda es undefined.
-const BASE_URL: string = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+// Dónde vive la API. `import.meta.env` son las variables de entorno de Vite.
+// Prioridad: VITE_API_URL si se definió; si no, en el build de producción
+// (import.meta.env.PROD) usamos "/api" porque frontend y API comparten
+// dominio en Vercel; y en desarrollo, el uvicorn local.
+const BASE_URL: string =
+  import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? "/api" : "http://127.0.0.1:8000");
 
 // --- Manejo del token de sesión ---
 // Guardamos el JWT en localStorage: un almacén clave-valor del navegador que
