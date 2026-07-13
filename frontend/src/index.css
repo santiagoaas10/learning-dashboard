@@ -116,9 +116,28 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
+.badge.backlog { background: #7a7f87; }
 .badge.todo { background: var(--todo); }
 .badge.in_progress { background: var(--in_progress); }
 .badge.done { background: var(--done); }
+
+/* Colores por TIPO de item. */
+.badge.kind-course { background: #4a86e8; }
+.badge.kind-project { background: #8e5ad8; }
+.badge.kind-video { background: #d85a8b; }
+.badge.kind-skill { background: #2a9d8f; }
+
+/* Colores por PRIORIDAD (de frío a caliente). */
+.badge.prio-low { background: #9aa0a6; }
+.badge.prio-medium { background: #5b8def; }
+.badge.prio-high { background: #e8843d; }
+.badge.prio-urgent { background: #d93025; }
+
+/* Fecha límite vencida: alerta visual. */
+.overdue {
+  color: #d93025;
+  font-weight: 600;
+}
 
 /* Barra de progreso simple. */
 .progress-track {
@@ -133,24 +152,32 @@ button {
   background: var(--accent);
 }
 
-.course-head {
+.item-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
-.course-title {
+.item-title {
   font-weight: 600;
   font-size: 1.05rem;
 }
 
-.course-title a {
+.item-title a {
   color: inherit;
   text-decoration: none;
 }
-.course-title a:hover {
+.item-title a:hover {
   text-decoration: underline;
+}
+
+/* Varios badges juntos (tipo + prioridad + estado). */
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .muted {
@@ -170,4 +197,66 @@ button {
   text-align: center;
   color: var(--muted);
   padding: 24px;
+}
+
+/* --- Barra superior con la sesión --- */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- Pantalla de login/registro --- */
+
+/* Centra la tarjeta vertical y horizontalmente en toda la ventana.
+   100dvh = alto dinámico del viewport (se ajusta bien en móviles). */
+.auth-wrap {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 24px;
+}
+
+.auth-card h2 {
+  margin: 0 0 16px;
+}
+
+.auth-error {
+  color: #d93025;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.auth-switch {
+  margin: 14px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* Botón que parece link (para "Regístrate" / "Inicia sesión"). */
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: inherit;
+  font-weight: 600;
+  text-decoration: underline;
 }
