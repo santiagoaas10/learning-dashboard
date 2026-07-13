@@ -13,9 +13,44 @@ Este es un patrón estándar en APIs serias: modelos de tabla ≠ modelos de I/O
 
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 from app.models import ItemKind, ItemPriority, ItemStatus
+
+
+# --- Auth ---
+
+class UserCreate(BaseModel):
+    """Datos para registrarse o iniciar sesión (email + contraseña).
+
+    `EmailStr` valida el formato del email automáticamente (necesita el
+    paquete email-validator). El mínimo de 8 caracteres es una defensa básica
+    contra contraseñas triviales.
+    """
+
+    email: EmailStr
+    password: str = Field(min_length=8)
+
+
+class UserRead(BaseModel):
+    """Lo que devolvemos de un usuario. Nótese lo que NO está: el hash de la
+    contraseña jamás sale de la API."""
+
+    id: int
+    email: EmailStr
+
+    model_config = {"from_attributes": True}
+
+
+class TokenResponse(BaseModel):
+    """Respuesta del login/registro: el token de sesión.
+
+    `token_type: "bearer"` le indica al cliente cómo usarlo: en el header
+    `Authorization: Bearer <access_token>`. Es la convención OAuth2.
+    """
+
+    access_token: str
+    token_type: str = "bearer"
 
 
 class ItemCreate(BaseModel):

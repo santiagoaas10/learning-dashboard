@@ -6,3 +6,8 @@
 fastapi==0.115.0          # el framework web: define rutas, valida datos, genera /docs
 uvicorn[standard]==0.30.6 # el servidor ASGI que ejecuta la app de FastAPI
 sqlmodel==0.0.22          # ORM (Pydantic + SQLAlchemy) para hablar con SQLite con tipos
+
+# --- Autenticación ---
+bcrypt==4.2.1             # hashing de contraseñas (lento a propósito: dificulta ataques de fuerza bruta)
+pyjwt==2.10.1             # crear y verificar JSON Web Tokens (el "carnet" de sesión)
+email-validator==2.2.0    # valida que el email tenga forma de email (lo usa Pydantic con EmailStr)

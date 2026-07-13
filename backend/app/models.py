@@ -69,6 +69,22 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+class User(SQLModel, table=True):
+    """Una cuenta de usuario del dashboard.
+
+    Regla de oro de seguridad: la contraseña NUNCA se guarda tal cual.
+    Guardamos su "hash" (una huella irreversible calculada con bcrypt).
+    Al hacer login, hasheamos lo que el usuario escribió y comparamos huellas;
+    ni siquiera nosotros podemos recuperar la contraseña original.
+    """
+
+    id: int | None = Field(default=None, primary_key=True)
+    # unique=True: la base de datos rechaza dos cuentas con el mismo email.
+    email: str = Field(index=True, unique=True)
+    hashed_password: str
+    created_at: datetime = Field(default_factory=_now)
+
+
 class Item(SQLModel, table=True):
     """Una tarjeta del tablero: curso, proyecto, video o habilidad.
 
@@ -79,6 +95,11 @@ class Item(SQLModel, table=True):
     # Clave primaria. Es `int | None` porque cuando creamos un item en memoria
     # todavía no tiene id: la base de datos lo asigna al guardarlo.
     id: int | None = Field(default=None, primary_key=True)
+
+    # Dueño del item. `foreign_key="user.id"` crea la relación con la tabla de
+    # usuarios: cada tarjeta pertenece a UNA cuenta, y todas las consultas se
+    # filtran por este campo para que nadie vea items ajenos.
+    owner_id: int = Field(foreign_key="user.id", index=True)
 
     # Datos que describe el usuario.
     title: str = Field(index=True)          # indexado: acelera búsquedas por título
