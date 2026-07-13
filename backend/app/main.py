@@ -14,7 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import create_db_and_tables
-from app.routers import items
+from app.routers import auth, items
 
 
 @asynccontextmanager
@@ -50,7 +50,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Enchufamos las rutas de items. A partir de aquí existen /items, etc.
+# Enchufamos los routers. A partir de aquí existen /auth/... y /items/...
+app.include_router(auth.router)
 app.include_router(items.router)
 
 
