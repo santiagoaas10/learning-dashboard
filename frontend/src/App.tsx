@@ -13,9 +13,9 @@ import { useEffect, useState } from "react";
 
 import * as api from "./api";
 import AuthForm from "./components/AuthForm";
-import ItemCard from "./components/ItemCard";
-import ItemForm from "./components/ItemForm";
-import type { Item, ItemCreate, ItemUpdate, User } from "./types";
+import Board from "./components/Board";
+import ItemForm, { KIND_LABEL } from "./components/ItemForm";
+import type { Item, ItemCreate, ItemKind, ItemUpdate, User } from "./types";
 
 export default function App() {
   // --- Estado de sesión ---
@@ -29,6 +29,10 @@ export default function App() {
   const [items, setItems] = useState<Item[]>([]);
   const [loadingItems, setLoadingItems] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Filtro por tipo ("all" = mostrar todo) y visibilidad del formulario.
+  const [kindFilter, setKindFilter] = useState<ItemKind | "all">("all");
+  const [showForm, setShowForm] = useState(false);
 
   // Al abrir la página: si hay un token guardado, preguntamos a la API quién
   // somos. Si responde 401 (token vencido), lo borramos y mostramos el login.
@@ -87,6 +91,7 @@ export default function App() {
   async function handleCreate(data: ItemCreate) {
     const created = await api.createItem(data);
     setItems((prev) => [...prev, created]);
+    setShowForm(false); // creado el item, el formulario se recoge solo
   }
 
   async function handleUpdate(id: number, data: ItemUpdate) {
@@ -119,6 +124,12 @@ export default function App() {
     return <AuthForm onSubmit={handleAuth} />;
   }
 
+  // El tablero muestra solo los items del tipo elegido ("all" = todos).
+  // Esto es "estado derivado": no guardamos la lista filtrada en useState,
+  // la calculamos en cada render a partir de items + kindFilter. Menos
+  // estados = menos formas de que se desincronicen.
+  const visibleItems = kindFilter === "all" ? items : items.filter((it) => it.kind === kindFilter);
+
   // Con sesión: el dashboard.
   return (
     <div className="container">
@@ -135,17 +146,39 @@ export default function App() {
         </div>
       </header>
 
-      <ItemForm onCreate={handleCreate} />
+      <div className="toolbar">
+        {/* Filtros por tipo: un "chip" por cada tipo + uno para ver todo. */}
+        <div className="filters">
+          <button
+            className={`chip ${kindFilter === "all" ? "active" : ""}`}
+            onClick={() => setKindFilter("all")}
+          >
+            Todos
+          </button>
+          {Object.entries(KIND_LABEL).map(([value, label]) => (
+            <button
+              key={value}
+              className={`chip ${kindFilter === value ? "active" : ""}`}
+              onClick={() => setKindFilter(value as ItemKind)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <button className="btn-primary" onClick={() => setShowForm((v) => !v)}>
+          {showForm ? "Cerrar" : "+ Nueva meta"}
+        </button>
+      </div>
+
+      {showForm && <ItemForm onCreate={handleCreate} />}
 
       {loadingItems && <div className="state-msg">Cargando items...</div>}
       {error && <div className="state-msg">Error: {error}</div>}
-      {!loadingItems && !error && items.length === 0 && (
-        <div className="state-msg">Aún no hay nada. ¡Agrega tu primera meta arriba!</div>
-      )}
 
-      {items.map((item) => (
-        <ItemCard key={item.id} item={item} onUpdate={handleUpdate} onDelete={handleDelete} />
-      ))}
+      {!loadingItems && !error && (
+        <Board items={visibleItems} onUpdate={handleUpdate} onDelete={handleDelete} />
+      )}
     </div>
   );
 }

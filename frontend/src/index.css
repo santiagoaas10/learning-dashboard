@@ -26,7 +26,8 @@ body {
 }
 
 .container {
-  max-width: 760px;
+  /* Más ancho que la v1: el tablero necesita espacio para 4 columnas. */
+  max-width: 1280px;
   margin: 0 auto;
   padding: 32px 20px 64px;
 }
@@ -197,6 +198,113 @@ button {
   text-align: center;
   color: var(--muted);
   padding: 24px;
+}
+
+/* --- Tablero kanban --- */
+
+.board {
+  display: grid;
+  /* 4 columnas iguales; en pantallas angostas se apilan de a 2 y luego 1. */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  align-items: start; /* cada columna crece según SU contenido */
+  margin-top: 16px;
+}
+
+@media (max-width: 1000px) {
+  .board { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .board { grid-template-columns: 1fr; }
+}
+
+.column {
+  background: #eef0f3;
+  border: 2px dashed transparent; /* reserva el borde: no "salta" al resaltar */
+  border-radius: 12px;
+  padding: 10px;
+  min-height: 120px;
+}
+
+/* Resalta la columna cuando arrastras una tarjeta encima (ver Board.tsx). */
+.column.drag-over {
+  border-color: var(--accent);
+  background: #e3ecfb;
+}
+
+.column-title {
+  margin: 2px 4px 10px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column-count {
+  background: var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+}
+
+.column-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 18px 6px;
+}
+
+/* La tarjeta dentro del tablero: compacta y "agarrable". */
+.item-card {
+  cursor: grab;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.item-card:active {
+  cursor: grabbing;
+}
+
+.item-card .badges {
+  margin: 6px 0;
+}
+
+/* --- Toolbar: filtros por tipo + botón de nueva meta --- */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* "Chip": botón pequeño tipo pastilla; el activo se pinta con el acento. */
+.chip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
 
 /* --- Barra superior con la sesión --- */
