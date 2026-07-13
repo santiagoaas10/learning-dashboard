@@ -8,6 +8,7 @@ ejecuta. Este archivo "arma" la aplicación:
 - enchufa los routers (las rutas agrupadas por recurso).
 """
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -39,13 +40,19 @@ app = FastAPI(
 # CORS = Cross-Origin Resource Sharing. El navegador bloquea por seguridad que
 # una página (p.ej. React en http://localhost:5173) llame a una API en otro
 # origen (http://127.0.0.1:8000) salvo que la API lo autorice explícitamente.
-# Aquí autorizamos los orígenes locales de Vite durante el desarrollo.
+#
+# Los orígenes permitidos vienen de la variable de entorno CORS_ORIGINS
+# (separados por coma); sin variable, los locales de Vite para desarrollo.
+# Nota: en producción desplegamos frontend y API bajo el MISMO dominio, así
+# que allí el navegador ni siquiera necesita CORS; esto es para desarrollo.
+cors_origins = os.environ.get(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173",
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=cors_origins,
     allow_methods=["*"],   # permite GET, POST, PATCH, DELETE...
     allow_headers=["*"],
 )
